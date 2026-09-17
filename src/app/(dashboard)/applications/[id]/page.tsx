@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -290,11 +291,10 @@ export default function ApplicationDetailPage() {
                 docResults.map((doc, idx) => (
                   <div
                     key={idx}
-                    className={`p-3 rounded-xl border flex items-start justify-between gap-3 text-xs ${
-                      doc.status === 'AVAILABLE'
+                    className={`p-3 rounded-xl border flex items-start justify-between gap-3 text-xs ${doc.status === 'AVAILABLE'
                         ? 'bg-[#f0fdf4] border-green-200'
                         : 'bg-[#fef2f2] border-red-200'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-start gap-2.5">
                       {doc.status === 'AVAILABLE' ? (
@@ -308,11 +308,10 @@ export default function ApplicationDetailPage() {
                       </div>
                     </div>
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        doc.status === 'AVAILABLE'
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${doc.status === 'AVAILABLE'
                           ? 'bg-green-100 text-green-700'
                           : 'bg-red-100 text-red-700'
-                      }`}
+                        }`}
                     >
                       {doc.status === 'AVAILABLE' ? 'VERIFIED' : 'MISSING'}
                     </span>
