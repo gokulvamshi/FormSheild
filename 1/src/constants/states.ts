@@ -1,0 +1,63 @@
+import type { StateInfo } from '@/types/template';
+
+export const SUPPORTED_STATES: StateInfo[] = [
+  { code: 'ANDHRA_PRADESH', displayName: 'Andhra Pradesh', capital: 'Amaravati', region: 'South India', supported: true },
+  { code: 'TELANGANA', displayName: 'Telangana', capital: 'Hyderabad', region: 'South India', supported: true },
+  { code: 'MAHARASHTRA', displayName: 'Maharashtra', capital: 'Mumbai', region: 'West India', supported: true },
+  { code: 'TAMIL_NADU', displayName: 'Tamil Nadu', capital: 'Chennai', region: 'South India', supported: true },
+  { code: 'KARNATAKA', displayName: 'Karnataka', capital: 'Bengaluru', region: 'South India', supported: true },
+  { code: 'KERALA', displayName: 'Kerala', capital: 'Thiruvananthapuram', region: 'South India', supported: true },
+  { code: 'UTTAR_PRADESH', displayName: 'Uttar Pradesh', capital: 'Lucknow', region: 'North India', supported: true },
+  { code: 'DELHI', displayName: 'Delhi (NCT)', capital: 'New Delhi', region: 'North India', supported: true },
+];
+
+export const ALL_STATES = [
+  { code: 'ANDHRA_PRADESH', displayName: 'Andhra Pradesh', supported: true },
+  { code: 'ARUNACHAL_PRADESH', displayName: 'Arunachal Pradesh', supported: false },
+  { code: 'ASSAM', displayName: 'Assam', supported: false },
+  { code: 'BIHAR', displayName: 'Bihar', supported: false },
+  { code: 'CHHATTISGARH', displayName: 'Chhattisgarh', supported: false },
+  { code: 'GOA', displayName: 'Goa', supported: false },
+  { code: 'GUJARAT', displayName: 'Gujarat', supported: false },
+  { code: 'HARYANA', displayName: 'Haryana', supported: false },
+  { code: 'HIMACHAL_PRADESH', displayName: 'Himachal Pradesh', supported: false },
+  { code: 'JHARKHAND', displayName: 'Jharkhand', supported: false },
+  { code: 'KARNATAKA', displayName: 'Karnataka', supported: true },
+  { code: 'KERALA', displayName: 'Kerala', supported: true },
+  { code: 'MADHYA_PRADESH', displayName: 'Madhya Pradesh', supported: false },
+  { code: 'MAHARASHTRA', displayName: 'Maharashtra', supported: true },
+  { code: 'MANIPUR', displayName: 'Manipur', supported: false },
+  { code: 'MEGHALAYA', displayName: 'Meghalaya', supported: false },
+  { code: 'MIZORAM', displayName: 'Mizoram', supported: false },
+  { code: 'NAGALAND', displayName: 'Nagaland', supported: false },
+  { code: 'ODISHA', displayName: 'Odisha', supported: false },
+  { code: 'PUNJAB', displayName: 'Punjab', supported: false },
+  { code: 'RAJASTHAN', displayName: 'Rajasthan', supported: false },
+  { code: 'SIKKIM', displayName: 'Sikkim', supported: false },
+  { code: 'TAMIL_NADU', displayName: 'Tamil Nadu', supported: true },
+  { code: 'TELANGANA', displayName: 'Telangana', supported: true },
+  { code: 'TRIPURA', displayName: 'Tripura', supported: false },
+  { code: 'UTTAR_PRADESH', displayName: 'Uttar Pradesh', supported: true },
+  { code: 'UTTARAKHAND', displayName: 'Uttarakhand', supported: false },
+  { code: 'WEST_BENGAL', displayName: 'West Bengal', supported: false },
+  // Union Territories
+  { code: 'DELHI', displayName: 'Delhi (NCT)', supported: true },
+  { code: 'JAMMU_KASHMIR', displayName: 'Jammu & Kashmir', supported: false },
+  { code: 'LADAKH', displayName: 'Ladakh', supported: false },
+  { code: 'CHANDIGARH', displayName: 'Chandigarh', supported: false },
+  { code: 'PUDUCHERRY', displayName: 'Puducherry', supported: false },
+  { code: 'ANDAMAN', displayName: 'Andaman & Nicobar Islands', supported: false },
+  { code: 'LAKSHADWEEP', displayName: 'Lakshadweep', supported: false },
+  { code: 'DNH', displayName: 'Dadra & Nagar Haveli and Daman & Diu', supported: false },
+];
+
+export const STATE_EMOJI: Record<string, string> = {
+  ANDHRA_PRADESH: '🏛️',
+  TELANGANA: '🌿',
+  MAHARASHTRA: '🌾',
+  TAMIL_NADU: '🎭',
+  KARNATAKA: '🌺',
+  KERALA: '🌴',
+  UTTAR_PRADESH: '🕌',
+  DELHI: '🏙️',
+};
