@@ -1,14 +1,12 @@
 import { PrismaClient } from '@prisma/client';
-import { Pool } from '@neondatabase/serverless';
 import { PrismaNeon } from '@prisma/adapter-neon';
 
 const prismaClientSingleton = () => {
   // Ensure FormShield can locate the database URL
   const connectionString = process.env.DATABASE_URL!;
 
-  // Route traffic through Neon's serverless pool instead of native TCP
-  const pool = new Pool({ connectionString });
-  const adapter = new PrismaNeon(pool);
+  // Route traffic through Neon's serverless adapter directly
+  const adapter = new PrismaNeon({ connectionString });
 
   return new PrismaClient({ adapter });
 };
@@ -19,7 +17,9 @@ declare global {
 
 const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
 
+// Exported with curly braces to fix the route.ts mismatch error
 export { prisma };
+
 if (process.env.NODE_ENV !== 'production') {
   globalThis.prismaGlobal = prisma;
 }
