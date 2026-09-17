@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSessionFromRequest } from '@/lib/session';
@@ -26,13 +27,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       generatedFormData: parseJsonSafe(application.generatedFormData, null),
       template: application.template
         ? {
-            ...application.template,
-            requiredDocuments: parseJsonSafe(application.template.requiredDocuments, []),
-            eligibilityCriteria: parseJsonSafe(application.template.eligibilityCriteria, []),
-            followUpQuestions: parseJsonSafe(application.template.followUpQuestions, []),
-            formTemplate: parseJsonSafe(application.template.formTemplate, []),
-            submissionInstructions: parseJsonSafe(application.template.submissionInstructions, {}),
-          }
+          ...application.template,
+          requiredDocuments: parseJsonSafe(application.template.requiredDocuments, []),
+          eligibilityCriteria: parseJsonSafe(application.template.eligibilityCriteria, []),
+          followUpQuestions: parseJsonSafe(application.template.followUpQuestions, []),
+          formTemplate: parseJsonSafe(application.template.formTemplate, []),
+          submissionInstructions: parseJsonSafe(application.template.submissionInstructions, {}),
+        }
         : null,
     });
   } catch (error) {
