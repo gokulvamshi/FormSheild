@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import type { Metadata } from 'next';
 import './globals.css';
 import { ToastProvider } from '@/components/common/Toast';
