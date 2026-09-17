@@ -7,6 +7,7 @@ import type { FollowUpQuestion } from '@/types/application';
 
 interface FollowUpQuestionsProps {
   state: string;
+  category: string;
   applicationType: string;
   templateId: string;
   answers: Record<string, string | boolean | number>;
@@ -15,7 +16,7 @@ interface FollowUpQuestionsProps {
 }
 
 export default function FollowUpQuestions({
-  state, applicationType, templateId, answers: initialAnswers, onSubmit, onBack,
+  state, category, applicationType, templateId, answers: initialAnswers, onSubmit, onBack,
 }: FollowUpQuestionsProps) {
   const [questions, setQuestions] = useState<FollowUpQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, string | boolean | number>>(initialAnswers);
@@ -59,7 +60,7 @@ export default function FollowUpQuestions({
       const res = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ state, category: 'TRANSPORT_LICENSING', applicationType }),
+        body: JSON.stringify({ state, category, applicationType }),
       });
       const app = await res.json();
 

@@ -100,6 +100,7 @@ export default function ApplicationWizard() {
     4: (
       <FollowUpQuestions
         state={wizardState.selectedState!}
+        category={wizardState.selectedCategory!}
         applicationType={wizardState.selectedType!}
         templateId={wizardState.templateId!}
         answers={wizardState.followUpAnswers}

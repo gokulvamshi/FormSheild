@@ -9,7 +9,7 @@
     "lint": "eslint",
     "db:generate": "node node_modules/prisma/build/index.js generate",
     "db:push": "node node_modules/prisma/build/index.js db push",
-    "db:seed": "node --loader ts-node/esm prisma/seed.ts",
+    "db:seed": "npx tsx prisma/seed.ts",
     "db:studio": "node node_modules/prisma/build/index.js studio"
   },
   "dependencies": {
