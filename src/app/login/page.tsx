@@ -15,11 +15,14 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/common/Toast';
+import { useLanguage } from '@/context/LanguageContext';
+import LanguageSelector from '@/components/common/LanguageSelector';
 
 export default function LoginPage() {
   const router = useRouter();
   const { loginWithGoogle, user, isConfigured, loading: authLoading } = useAuth();
   const { showToast } = useToast();
+  const { t } = useLanguage();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -77,7 +80,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f8fafd] via-white to-[#f0fdf4] flex flex-col justify-center items-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-[#f8fafd] via-white to-[#f0fdf4] flex flex-col justify-center items-center p-4 relative">
+      {/* Top Language Selector */}
+      <div className="absolute top-4 right-4 sm:right-6">
+        <LanguageSelector variant="header" />
+      </div>
+
       {/* Brand Header */}
       <div className="text-center mb-8">
         <Link href="/" className="inline-flex items-center gap-2.5 mb-3">
@@ -89,7 +97,7 @@ export default function LoginPage() {
           </span>
         </Link>
         <p className="text-xs font-semibold tracking-wider text-[#6b7280] uppercase">
-          Rejection-Proof Citizen Application Portal
+          {t('login.brandTagline')}
         </p>
       </div>
 
@@ -115,9 +123,9 @@ export default function LoginPage() {
 
         {/* Card Header */}
         <div className="text-center mb-6">
-          <h1 className="text-xl font-bold text-[#111827]">Citizen Sign In</h1>
+          <h1 className="text-xl font-bold text-[#111827]">{t('login.cardTitle')}</h1>
           <p className="text-sm text-[#6b7280] mt-1.5 leading-relaxed">
-            Continue with your Google account to access your applications, certificates, and DigiLocker documents.
+            {t('login.cardSubtitle')}
           </p>
         </div>
 
@@ -145,7 +153,7 @@ export default function LoginPage() {
             {loading ? (
               <>
                 <RefreshCw size={18} className="animate-spin text-[#1a73e8]" />
-                <span>Connecting to Google...</span>
+                <span>{t('login.connecting')}</span>
               </>
             ) : (
               <>
@@ -169,7 +177,7 @@ export default function LoginPage() {
                   />
                 </svg>
                 <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
-                  Continue with Google
+                  {t('login.continueGoogle')}
                 </span>
               </>
             )}
@@ -181,22 +189,22 @@ export default function LoginPage() {
           <div className="flex items-start gap-2.5 text-xs text-[#4b5563]">
             <Zap className="w-4 h-4 text-[#1a73e8] shrink-0 mt-0.5" />
             <div>
-              <span className="font-semibold text-[#111827]">Instant DigiLocker Sync:</span>{' '}
-              Pull verified Aadhaar, Driving License, RC, and PAN via Setu Gateway.
+              <span className="font-semibold text-[#111827]">{t('login.features.instantSync')}:</span>{' '}
+              {t('login.features.instantSyncDesc')}
             </div>
           </div>
           <div className="flex items-start gap-2.5 text-xs text-[#4b5563]">
             <FileCheck className="w-4 h-4 text-[#16a34a] shrink-0 mt-0.5" />
             <div>
-              <span className="font-semibold text-[#111827]">Pre-Submission Shield:</span>{' '}
-              Eliminates rejections with automated rule verification across 8 states.
+              <span className="font-semibold text-[#111827]">{t('login.features.shield')}:</span>{' '}
+              {t('login.features.shieldDesc')}
             </div>
           </div>
           <div className="flex items-start gap-2.5 text-xs text-[#4b5563]">
             <Lock className="w-4 h-4 text-[#0d9488] shrink-0 mt-0.5" />
             <div>
-              <span className="font-semibold text-[#111827]">Cross-Device Persistence:</span>{' '}
-              Your drafts and verified identity stay securely synced on any device.
+              <span className="font-semibold text-[#111827]">{t('login.features.persistence')}:</span>{' '}
+              {t('login.features.persistenceDesc')}
             </div>
           </div>
         </div>
@@ -222,7 +230,7 @@ export default function LoginPage() {
 
       {/* Footer disclaimer */}
       <p className="text-xs text-[#9ca3af] mt-6 text-center max-w-sm leading-relaxed">
-        By continuing, you authorize FormShield to securely link your verified citizen identity and DigiLocker documents exclusively upon your explicit consent.
+        {t('login.disclaimer')}
       </p>
     </div>
   );

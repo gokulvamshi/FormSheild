@@ -197,7 +197,7 @@ export default function FormPreview({ applicationId, onGenerate, onBack }: FormP
               onClick={() => onGenerate(formData, formFields)}
               className="btn-primary"
             >
-              Looks Good! Generate PDF →
+              Looks Good! Continue to Submit / Download →
             </button>
             <button onClick={generateForm} className="btn-ghost">
               <RefreshCw size={14} />

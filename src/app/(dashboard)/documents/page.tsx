@@ -5,9 +5,11 @@ import { motion } from 'framer-motion';
 import { RefreshCw, Shield, CheckCircle2, ExternalLink, Eye, Download } from 'lucide-react';
 import { DOCUMENT_TYPE_MAP } from '@/constants/documentTypes';
 import { formatDate } from '@/lib/utils';
+import { useLanguage } from '@/context/LanguageContext';
 import type { Document } from '@/types/document';
 
 export default function DocumentsPage() {
+  const { t } = useLanguage();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [user, setUser] = useState<{ mockMode: boolean; digilockerConnected: boolean } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,15 +49,15 @@ export default function DocumentsPage() {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-label mb-1">DIGILOCKER DOCUMENTS</p>
-          <h1 className="text-heading-xl">My Documents</h1>
+          <p className="text-label mb-1">{t('sidebar.documents', 'DIGILOCKER DOCUMENTS')}</p>
+          <h1 className="text-heading-xl">{t('sidebar.documents', 'My Documents')}</h1>
           <p className="text-sm text-[#6b7280] mt-1">
-            {documents.length} document{documents.length !== 1 ? 's' : ''} fetched from DigiLocker
+            {documents.length} {t('sidebar.documents', 'documents')}
           </p>
         </div>
         <button onClick={syncDocuments} disabled={syncing} className="btn-secondary">
           <RefreshCw size={15} className={syncing ? 'animate-spin' : ''} />
-          {syncing ? 'Syncing...' : 'Sync with DigiLocker'}
+          {syncing ? t('common.loading', 'Syncing...') : t('documents.sync', 'Sync with DigiLocker')}
         </button>
       </div>
 
@@ -74,10 +76,12 @@ export default function DocumentsPage() {
           <div>
             <div className="flex items-center gap-2">
               <p className="font-semibold text-[#1f2937] text-sm">
-                {isConnected ? 'DigiLocker Connected (Setu Gateway)' : 'DigiLocker Not Linked Yet'}
+                {isConnected ? t('sidebar.digilockerConnected', 'DigiLocker Connected') : t('sidebar.digilockerNotConnected', 'DigiLocker Not Connected')}
               </p>
               {isConnected && (
-                <span className="px-2 py-0.5 text-[10px] bg-[#dcfce7] text-[#15803d] font-bold rounded-full">VERIFIED</span>
+                <span className="px-2 py-0.5 text-[10px] bg-[#dcfce7] text-[#15803d] font-bold rounded-full">
+                  {t('common.verified', 'VERIFIED')}
+                </span>
               )}
             </div>
             <p className="text-xs text-[#6b7280]">
@@ -89,7 +93,7 @@ export default function DocumentsPage() {
         </div>
         {!isConnected && (
           <a href="/digilocker" className="btn-primary text-xs py-2 px-3 whitespace-nowrap">
-            Connect DigiLocker &rarr;
+            {t('sidebar.digilocker', 'Connect DigiLocker')} &rarr;
           </a>
         )}
       </div>
@@ -108,13 +112,13 @@ export default function DocumentsPage() {
       ) : documents.length === 0 ? (
         <div className="card py-16 text-center">
           <Shield size={40} className="text-[#9ca3af] mx-auto mb-4" />
-          <h3 className="text-heading-sm mb-2">No Documents Found</h3>
+          <h3 className="text-heading-sm mb-2">{t('documents.empty', 'No Documents Found')}</h3>
           <p className="text-[#6b7280] text-sm mb-4">
             Connect your DigiLocker to fetch your verified documents.
           </p>
           <button onClick={syncDocuments} className="btn-primary">
             <RefreshCw size={15} />
-            Sync DigiLocker Documents
+            {t('documents.sync', 'Sync DigiLocker Documents')}
           </button>
         </div>
       ) : (
@@ -138,7 +142,7 @@ export default function DocumentsPage() {
                   {doc.verified && (
                     <span className="flex items-center gap-1 text-xs font-medium text-[#16a34a] bg-[#f0fdf4] px-2 py-0.5 rounded-full">
                       <CheckCircle2 size={11} />
-                      Verified
+                      {t('common.verified', 'Verified')}
                     </span>
                   )}
                 </div>
@@ -167,11 +171,11 @@ export default function DocumentsPage() {
                 <div className="flex gap-2 pt-2 border-t border-[#f3f4f6]">
                   <button className="btn-ghost text-xs py-1.5 px-3 flex-1 justify-center">
                     <Eye size={12} />
-                    View
+                    {t('common.view', 'View')}
                   </button>
                   <button className="btn-ghost text-xs py-1.5 px-3 flex-1 justify-center">
                     <Download size={12} />
-                    Download
+                    {t('common.download', 'Download')}
                   </button>
                 </div>
               </motion.div>

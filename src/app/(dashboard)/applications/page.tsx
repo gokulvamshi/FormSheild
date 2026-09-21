@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Plus, Filter, Search, FileText } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 import { STATUS_LABELS, STATUS_COLORS, STATE_LABELS, CATEGORY_LABELS, formatDateTime } from '@/lib/utils';
 
 interface Application {
@@ -37,6 +38,7 @@ const APP_TYPE_LABELS: Record<string, string> = {
 const STEP_LABELS = ['', 'Select State', 'Select Category', 'Select Type', 'Questions', 'Documents', 'Preview', 'Download'];
 
 export default function ApplicationsPage() {
+  const { t } = useLanguage();
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
@@ -54,7 +56,7 @@ export default function ApplicationsPage() {
   const filtered = applications.filter((app) => {
     if (filter !== 'ALL' && app.status !== filter) return false;
     if (search && !APP_TYPE_LABELS[app.applicationType]?.toLowerCase().includes(search.toLowerCase()) &&
-        !STATE_LABELS[app.state]?.toLowerCase().includes(search.toLowerCase())) return false;
+      !STATE_LABELS[app.state]?.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
 
@@ -62,12 +64,12 @@ export default function ApplicationsPage() {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-label mb-1">MY APPLICATIONS</p>
-          <h1 className="text-heading-xl">Applications</h1>
+          <p className="text-label mb-1">{t('sidebar.myApplications', 'MY APPLICATIONS')}</p>
+          <h1 className="text-heading-xl">{t('sidebar.myApplications', 'Applications')}</h1>
         </div>
         <Link href="/applications/new" className="btn-primary">
           <Plus size={15} />
-          New Application
+          {t('sidebar.newApplication', 'New Application')}
         </Link>
       </div>
 
@@ -77,7 +79,7 @@ export default function ApplicationsPage() {
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]" />
           <input
             type="text"
-            placeholder="Search applications..."
+            placeholder={t('common.search', 'Search applications...')}
             className="form-input pl-8 py-2 text-sm"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -88,13 +90,12 @@ export default function ApplicationsPage() {
             <button
               key={s}
               onClick={() => setFilter(s)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                filter === s
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${filter === s
                   ? 'bg-[#1a73e8] text-white'
                   : 'bg-[#f3f4f6] text-[#6b7280] hover:bg-[#e5e7eb]'
-              }`}
+                }`}
             >
-              {s === 'ALL' ? 'All' : STATUS_LABELS[s] || s}
+              {s === 'ALL' ? t('statuses.ALL', 'All') : t(`statuses.${s}`, STATUS_LABELS[s] || s)}
             </button>
           ))}
         </div>
@@ -118,17 +119,19 @@ export default function ApplicationsPage() {
             <FileText size={28} className="text-[#1a73e8]" />
           </div>
           <h3 className="text-heading-sm mb-2">
-            {applications.length === 0 ? 'No applications yet' : 'No matching applications'}
+            {applications.length === 0
+              ? t('dashboard.empty.title', 'No applications yet')
+              : t('applications.noMatch.title', 'No matching applications')}
           </h3>
           <p className="text-[#6b7280] text-sm mb-5">
             {applications.length === 0
-              ? 'Create your first application to get started.'
-              : 'Try changing your search or filter criteria.'}
+              ? t('dashboard.empty.desc', 'Create your first application to get started.')
+              : t('applications.noMatch.desc', 'Try changing your search or filter criteria.')}
           </p>
           {applications.length === 0 && (
             <Link href="/applications/new" className="btn-primary">
               <Plus size={15} />
-              Create First Application
+              {t('dashboard.empty.button', 'Create First Application')}
             </Link>
           )}
         </div>
@@ -137,6 +140,9 @@ export default function ApplicationsPage() {
           {filtered.map((app, i) => {
             const colors = STATUS_COLORS[app.status] || STATUS_COLORS.DRAFT;
             const progress = Math.round((app.currentStep / 7) * 100);
+            const localizedAppType = t(`applicationTypes.${app.applicationType}`, APP_TYPE_LABELS[app.applicationType] || app.applicationType);
+            const localizedCategory = t(`categories.${app.category}`, CATEGORY_LABELS[app.category] || app.category);
+            const localizedStatus = t(`statuses.${app.status}`, STATUS_LABELS[app.status] || app.status);
 
             return (
               <motion.div
@@ -150,23 +156,27 @@ export default function ApplicationsPage() {
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <div>
                         <h3 className="font-semibold text-[15px] text-[#1f2937]">
-                          {APP_TYPE_LABELS[app.applicationType] || app.applicationType}
+                          {localizedAppType}
                         </h3>
                         <p className="text-sm text-[#6b7280] mt-0.5">
-                          {STATE_LABELS[app.state]} · {CATEGORY_LABELS[app.category]}
+                          {STATE_LABELS[app.state]} · {localizedCategory}
                         </p>
                       </div>
                       <span className={`badge ${colors.bg} ${colors.text} flex-shrink-0`}>
                         <span className={`badge-dot ${colors.dot}`} />
-                        {STATUS_LABELS[app.status]}
+                        {localizedStatus}
                       </span>
                     </div>
 
                     {/* Progress bar */}
                     <div className="mb-2">
                       <div className="flex justify-between text-xs text-[#9ca3af] mb-1">
-                        <span>{STEP_LABELS[app.currentStep] || `Step ${app.currentStep}`}</span>
-                        <span>{app.currentStep}/7 steps</span>
+                        <span>
+                          {STEP_LABELS[app.currentStep]
+                            ? t(`steps.${app.currentStep}`, STEP_LABELS[app.currentStep])
+                            : `${t('common.step', 'Step')} ${app.currentStep}`}
+                        </span>
+                        <span>{app.currentStep}/7 {t('common.steps', 'steps')}</span>
                       </div>
                       <div className="h-1.5 bg-[#f3f4f6] rounded-full overflow-hidden">
                         <div
@@ -176,7 +186,9 @@ export default function ApplicationsPage() {
                       </div>
                     </div>
 
-                    <p className="text-xs text-[#9ca3af]">Last updated: {formatDateTime(app.updatedAt)}</p>
+                    <p className="text-xs text-[#9ca3af]">
+                      {t('common.lastUpdated', 'Last updated:')} {formatDateTime(app.updatedAt)}
+                    </p>
                   </div>
                 </Link>
               </motion.div>

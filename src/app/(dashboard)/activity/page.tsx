@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Shield, FileText, LogIn, Download, RefreshCw, Settings, Plus, CheckCircle2, AlertCircle } from 'lucide-react';
 import { formatDateTime } from '@/lib/utils';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface ActivityItem {
   id: string;
@@ -47,6 +48,7 @@ const ACTION_LABELS: Record<string, string> = {
 };
 
 export default function ActivityPage() {
+  const { t } = useLanguage();
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,8 +62,8 @@ export default function ActivityPage() {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <div className="mb-6">
-        <p className="text-label mb-1">ACTIVITY LOG</p>
-        <h1 className="text-heading-xl">Activity History</h1>
+        <p className="text-label mb-1">{t('sidebar.activity', 'ACTIVITY LOG')}</p>
+        <h1 className="text-heading-xl">{t('sidebar.activity', 'Activity History')}</h1>
         <p className="text-sm text-[#6b7280] mt-1">
           A complete record of all your FormShield activity.
         </p>

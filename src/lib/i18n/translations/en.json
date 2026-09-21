@@ -1,0 +1,301 @@
+{
+  "announcement": {
+    "text": "Pre-Submission Intelligence for India — 8 States & 17+ Schemes Supported",
+    "tryLiveDemo": "Try Live Demo →"
+  },
+  "nav": {
+    "brandName": "FormShield",
+    "badgeIndia": "INDIA",
+    "howItWorks": "How It Works",
+    "supportedSchemes": "Supported Schemes",
+    "zeroRejection": "Zero-Rejection Engine",
+    "faqs": "FAQs",
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
+  },
+  "hero": {
+    "badge": "National Pre-Submission Intelligence Platform",
+    "poweredBy": "Powered by DigiLocker",
+    "titlePrefix": "Submit Right",
+    "titleHighlight": "The First Time",
+    "subtitle": "Auto-fills error-free official government forms using your DigiLocker-verified documents. Instant cross-document audit flags name mismatches, expired certificates, and missing prerequisites before you submit.",
+    "startApplication": "Start Free Application",
+    "demoLogin": "1-Click Demo Login",
+    "dpdpCompliant": "DPDP Act 2023 Compliant",
+    "itActRule": "IT Act Rule 9A Legal Acceptance"
+  },
+  "rejection": {
+    "badge": "The Intelligence Layer",
+    "title": "Why 42% of Government Forms Fail — And How We Shield You",
+    "subtitle": "Government clerks reject applications for minor typographic discrepancies. FormShield's pre-submission algorithm audits your forms across 14 validation criteria.",
+    "items": [
+      {
+        "issue": "Name Mismatch (Aadhaar vs Marksheet)",
+        "manual": "❌ Application rejected after 3 weeks waiting; ₹500 fee forfeited.",
+        "formshield": "✅ Auto-detected in 2 seconds. Identifies initial vs expanded spelling before submission."
+      },
+      {
+        "issue": "Expired Income Certificate",
+        "manual": "❌ Rejected by revenue officer during physical document verification.",
+        "formshield": "✅ Expiry date extracted from DigiLocker metadata; flags renewal requirement upfront."
+      },
+      {
+        "issue": "Wrong Jurisdiction / Portal Selected",
+        "manual": "❌ Citizen applies on wrong RTO/Tahsildar portal; file sent back.",
+        "formshield": "✅ Auto-routes to exact State Portal & District based on Aadhaar verified Pincode."
+      },
+      {
+        "issue": "Missing Supporting Documents",
+        "manual": "❌ Citizen forgets Caste affidavit; portal freezes application status.",
+        "formshield": "✅ Comprehensive pre-submission checklist ensures 100% prerequisite fulfillment."
+      }
+    ]
+  },
+  "howItWorks": {
+    "badge": "Simple 4-Step Process",
+    "title": "From Scratch to Stamped Form in 3 Minutes",
+    "steps": [
+      {
+        "step": "01",
+        "title": "Mobile OTP Login",
+        "desc": "Authenticate securely with your 10-digit mobile number or Google account. No passwords to remember."
+      },
+      {
+        "step": "02",
+        "title": "Connect DigiLocker",
+        "desc": "Instantly pull your verified Aadhaar, PAN, 10th/12th Marks, and Domicile certificates."
+      },
+      {
+        "step": "03",
+        "title": "Select State & Scheme",
+        "desc": "Choose your state portal and service. Our engine asks only what is not in your documents."
+      },
+      {
+        "step": "04",
+        "title": "Download or Submit Online",
+        "desc": "Receive an official application package ready for instant submission or download."
+      }
+    ]
+  },
+  "schemes": {
+    "badge": "Comprehensive Coverage",
+    "title": "Supported States & Government Services",
+    "subtitle": "Serving 8 major Indian states with standardized departmental templates",
+    "categories": [
+      {
+        "title": "Transport & Driving Licenses",
+        "schemes": ["Learner's Permit (LLR)", "Permanent Driving License", "License Renewal", "RC New Vehicle", "RC Ownership Transfer"]
+      },
+      {
+        "title": "Loans & Government Finance",
+        "schemes": ["PM Mudra Loan (Shishu/Kishor)", "Higher Education Loan", "PM Awas Yojana (PMAY)", "Personal Loan for Micro-biz"]
+      },
+      {
+        "title": "Citizen Certificates & Revenue",
+        "schemes": ["Income Certificate (MeeSeva/e-District)", "Caste & Community Certificate", "Domicile / Residence Certificate", "Character Certificate"]
+      },
+      {
+        "title": "Education & Scholarships",
+        "schemes": ["Post-Matric National Scholarship", "Central Sector Scholarship", "State University College Admissions", "Fee Reimbursement Scheme"]
+      }
+    ]
+  },
+  "validation": {
+    "badge": "Verification Standards",
+    "title": "14 Validation Criteria",
+    "subtitle": "Automated pre-submission audit checkpoints to ensure accurate and compliant form filing.",
+    "criteria": [
+      { "id": "01", "title": "Aadhaar Identity & Demographics Match", "desc": "Audits full legal name spelling against secondary ID and certificate records." },
+      { "id": "02", "title": "Date of Birth & Age Eligibility Check", "desc": "Verifies citizen meets the exact age criteria defined by the department scheme." },
+      { "id": "03", "title": "Jurisdiction & Pincode Routing", "desc": "Validates residential district against exact municipal or RTO jurisdiction." },
+      { "id": "04", "title": "Document Expiry & Validity Horizon", "desc": "Checks DigiLocker metadata to ensure income or validity certificates are not expired." },
+      { "id": "05", "title": "Digital Signature Cryptographic Authenticity", "desc": "Ensures document hashes match issuing authority public keys." },
+      { "id": "06", "title": "Parentage & Spouse Name Consistency", "desc": "Validates father/mother/guardian names across birth and educational records." },
+      { "id": "07", "title": "Income Ceiling Compliance", "desc": "Verifies declared annual family income aligns with verified IT returns or revenue certs." },
+      { "id": "08", "title": "Category & Caste Reservation Mapping", "desc": "Matches state-notified backward class codes against national criteria." },
+      { "id": "09", "title": "Vehicle Class & Medical Fitness Verification", "desc": "Ensures DL applications include appropriate transport category endorsements." },
+      { "id": "10", "title": "Educational Board & Roll Number Lookup", "desc": "Validates 10th/12th marksheet roll numbers against board registries." },
+      { "id": "11", "title": "Address Consistency & Proof Completeness", "desc": "Audits current vs permanent addresses to satisfy local residence criteria." },
+      { "id": "12", "title": "Mandatory Prerequisite Completeness", "desc": "Guarantees 100% prerequisite documentation fulfillment before final filing." },
+      { "id": "13", "title": "Duplicate Application Detection", "desc": "Prevents accidental duplicate token filing that causes automatic disqualification." },
+      { "id": "14", "title": "Official Portal Format Conformance", "desc": "Formats data structures in strict adherence to target state portal schemas." }
+    ]
+  },
+  "faqs": {
+    "badge": "Got Questions?",
+    "title": "Frequently Asked Questions",
+    "list": [
+      {
+        "q": "Is FormShield officially affiliated with DigiLocker?",
+        "a": "FormShield integrates with DigiLocker using standard OAuth 2.0 Partner API specifications under the Digital India initiative. All documents are digitally signed and verified directly from source issuing authorities (UIDAI, Income Tax Dept, State Education Boards)."
+      },
+      {
+        "q": "Are PDFs generated legally valid?",
+        "a": "Yes. Documents fetched via DigiLocker are treated at par with original physical documents under Rule 9A of the Information Technology (Preservation and Retention of Information by Intermediaries Providing Digital Locker Facilities) Rules, 2016."
+      },
+      {
+        "q": "Does FormShield store my private Aadhaar or biometric data?",
+        "a": "No. FormShield strictly complies with the Digital Personal Data Protection (DPDP) Act 2023. Document data is extracted purely for form population and session memory. We do not store your Aadhaar biometric records or sell citizen data."
+      },
+      {
+        "q": "How much does it cost to use FormShield?",
+        "a": "FormShield is free for citizen pre-submission checks. Official government processing fees (if applicable for your specific scheme) are paid directly to the respective State Government or Portal."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Ready to file your government application without fear of rejection?",
+    "subtitle": "Use pre-submission intelligence to submit flawless applications today.",
+    "getStarted": "Get Started with DigiLocker",
+    "tryDemo": "Try Demo Mode"
+  },
+  "footer": {
+    "about": "National Pre-Submission Intelligence Platform empowering Indian citizens to file rejection-free applications.",
+    "supportedStates": "Supported States",
+    "keySchemes": "Key Schemes",
+    "legalSecurity": "Legal & Security",
+    "copyright": "FormShield India. Designed for citizen convenience.",
+    "complianceNote": "This is a citizen utility platform operating in compliance with Digital India guidelines."
+  },
+  "login": {
+    "brandTagline": "Rejection-Proof Citizen Application Portal",
+    "cardTitle": "Citizen Sign In",
+    "cardSubtitle": "Continue with your Google account to access your applications, certificates, and DigiLocker documents.",
+    "continueGoogle": "Continue with Google",
+    "connecting": "Connecting to Google...",
+    "features": {
+      "instantSync": "Instant DigiLocker Sync",
+      "instantSyncDesc": "Pull verified Aadhaar, Driving License, RC, and PAN via Setu Gateway.",
+      "shield": "Pre-Submission Shield",
+      "shieldDesc": "Eliminates rejections with automated rule verification across 8 states.",
+      "persistence": "Cross-Device Persistence",
+      "persistenceDesc": "Your drafts and verified identity stay securely synced on any device."
+    },
+    "disclaimer": "By continuing, you authorize FormShield to securely link your verified citizen identity and DigiLocker documents exclusively upon your explicit consent."
+  },
+  "formActions": {
+    "downloadPdf": "Download Official Form (PDF)",
+    "submitOnline": "Submit Directly Online",
+    "submitting": "Submitting Application...",
+    "downloading": "Generating PDF...",
+    "submittedTitle": "Application Submitted Successfully! 🎉",
+    "submittedDesc": "Your application has been registered with official reference",
+    "downloadReceipt": "Download Submission Receipt",
+    "backToApplications": "Back to My Applications",
+    "saveAndExit": "Save & Exit",
+    "readyTitle": "Your Official Application is Ready!",
+    "readyDesc": "Your form has been verified and populated with your DigiLocker documents. You can download the official clean PDF or submit it directly online.",
+    "validationError": "Please ensure all required fields are filled before submitting."
+  },
+  "common": {
+    "selectLanguage": "Select Language",
+    "languages": "Languages",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "download": "Download",
+    "back": "Back",
+    "next": "Next",
+    "step": "Step",
+    "of": "of",
+    "required": "Required",
+    "optional": "Optional",
+    "verified": "Verified",
+    "status": "Status",
+    "error": "An error occurred. Please try again.",
+    "success": "Success!"
+  },
+  "dashboard": {
+    "tagline": "FORMSHIELD DASHBOARD",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "subtitle": "Let's make sure your next application is ready before you submit it.",
+    "stats": {
+      "activeApplications": "Active Applications",
+      "inProgress": "In progress",
+      "readyToSubmit": "Ready to Submit",
+      "allChecksComplete": "All checks complete",
+      "needsAttention": "Needs Attention",
+      "reviewRequired": "Review required",
+      "documentsConnected": "Documents Connected",
+      "verified": "verified"
+    },
+    "recentApplications": "Recent Applications",
+    "viewAll": "View all",
+    "table": {
+      "application": "APPLICATION",
+      "type": "TYPE",
+      "status": "STATUS",
+      "lastChecked": "LAST CHECKED"
+    },
+    "empty": {
+      "title": "No applications yet",
+      "desc": "Start your first application to get rejection-proof results.",
+      "button": "Create First Application"
+    },
+    "tipOfTheDay": "Tip of the day",
+    "tips": [
+      "Your documents are fetched directly from DigiLocker — they are digitally verified and accepted by all government portals.",
+      "Always double-check auto-filled fields before submitting. While we extract data accurately, you can edit any field.",
+      "Save your application progress at any step. You can come back and continue later.",
+      "Documents in DigiLocker never expire — they are always accessible when you need them.",
+      "Income certificates must be recent (usually within 1 year) for scholarship applications. Check the dates!"
+    ]
+  },
+  "sidebar": {
+    "preSubmission": "Pre-Submission Intelligence",
+    "newApplication": "New Application",
+    "dashboard": "Dashboard",
+    "myApplications": "My Applications",
+    "documents": "Documents",
+    "digilocker": "DigiLocker",
+    "activity": "Activity",
+    "settings": "Settings",
+    "digilockerConnected": "DigiLocker Connected",
+    "digilockerNotConnected": "DigiLocker Not Connected",
+    "privacySecurity": "Privacy & Security",
+    "signOut": "Sign out"
+  },
+  "topbar": {
+    "needHelp": "Need help?",
+    "newApplication": "New Application"
+  },
+  "statuses": {
+    "DRAFT": "Draft",
+    "IN_PROGRESS": "In Progress",
+    "DOCUMENTS_PENDING": "Needs Attention",
+    "READY": "Ready to Submit",
+    "DOWNLOADED": "Downloaded",
+    "SUBMITTED": "Submitted",
+    "ALL": "All"
+  },
+  "categories": {
+    "TRANSPORT_LICENSING": "Transport & Licensing",
+    "LOANS_FINANCE": "Loans & Finance",
+    "CERTIFICATES_DOCUMENTS": "Certificates & Documents",
+    "EDUCATION_SCHOLARSHIPS": "Education & Scholarships"
+  },
+  "applicationTypes": {
+    "DL_LEARNERS_PERMIT": "DL — Learner's Permit",
+    "DL_PERMANENT": "DL — Permanent",
+    "DL_RENEWAL": "DL — Renewal",
+    "RC_NEW_VEHICLE": "RC — New Vehicle",
+    "RC_TRANSFER_OWNERSHIP": "RC — Ownership Transfer",
+    "INCOME_CERTIFICATE": "Income Certificate",
+    "CASTE_CERTIFICATE": "Caste Certificate",
+    "DOMICILE_CERTIFICATE": "Domicile Certificate",
+    "BIRTH_CERTIFICATE": "Birth Certificate",
+    "CHARACTER_CERTIFICATE": "Character Certificate",
+    "EDUCATION_LOAN": "Education Loan",
+    "PERSONAL_LOAN": "Personal Loan",
+    "PM_MUDRA_LOAN": "PM Mudra Loan",
+    "PM_AWAS_YOJANA": "PM Awas Yojana",
+    "POST_MATRIC_SCHOLARSHIP": "Post-Matric Scholarship",
+    "CENTRAL_SECTOR_SCHOLARSHIP": "Central Sector Scholarship",
+    "COLLEGE_ADMISSION": "College Admission"
+  }
+}

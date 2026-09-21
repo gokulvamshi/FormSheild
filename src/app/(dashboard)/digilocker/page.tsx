@@ -16,8 +16,10 @@ import {
   FileCheck,
 } from 'lucide-react';
 import { useToast } from '@/components/common/Toast';
+import { useLanguage } from '@/context/LanguageContext';
 
 function DigiLockerContent() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const { showToast } = useToast();
 
@@ -161,7 +163,9 @@ function DigiLockerContent() {
             <div>
               <div className="flex items-center gap-2">
                 <p className="font-semibold text-base text-[#1f2937]">
-                  {isConnected ? 'DigiLocker Connected' : 'DigiLocker Disconnected'}
+                  {isConnected
+                    ? t('sidebar.digilockerConnected', 'DigiLocker Connected')
+                    : t('sidebar.digilockerNotConnected', 'DigiLocker Disconnected')}
                 </p>
                 {isConnected && (
                   <span className="px-2 py-0.5 bg-[#dcfce7] text-[#15803d] text-[11px] font-bold rounded-full">

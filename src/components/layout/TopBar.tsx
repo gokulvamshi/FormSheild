@@ -2,12 +2,16 @@
 
 import Link from 'next/link';
 import { Plus, HelpCircle, Bell } from 'lucide-react';
+import LanguageSelector from '@/components/common/LanguageSelector';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface TopBarProps {
   title?: string;
 }
 
 export default function TopBar({ title }: TopBarProps) {
+  const { t } = useLanguage();
+
   return (
     <header className="h-14 bg-white border-b border-[#e5e7eb] flex items-center justify-between px-6 sticky top-0 z-30">
       {title && (
@@ -16,12 +20,14 @@ export default function TopBar({ title }: TopBarProps) {
       {!title && <div />}
 
       <div className="flex items-center gap-3">
+        <LanguageSelector variant="header" />
+
         <a
           href="mailto:support@formshield.in"
-          className="flex items-center gap-1.5 text-sm text-[#6b7280] hover:text-[#1a73e8] transition-colors font-medium"
+          className="flex items-center gap-1.5 text-sm text-[#6b7280] hover:text-[#1a73e8] transition-colors font-medium hidden sm:flex"
         >
           <HelpCircle size={15} />
-          Need help?
+          {t('topbar.needHelp', 'Need help?')}
         </a>
 
         <button className="relative w-9 h-9 rounded-full hover:bg-[#f3f4f6] flex items-center justify-center transition-colors text-[#6b7280]">
@@ -34,7 +40,7 @@ export default function TopBar({ title }: TopBarProps) {
           className="btn-primary text-sm py-2 px-4"
         >
           <Plus size={15} />
-          New Application
+          {t('topbar.newApplication', 'New Application')}
         </Link>
       </div>
     </header>

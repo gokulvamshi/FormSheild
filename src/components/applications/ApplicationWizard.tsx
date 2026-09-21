@@ -3,8 +3,20 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Circle, ChevronRight } from 'lucide-react';
+import {
+  CheckCircle2,
+  Circle,
+  ChevronRight,
+  Download,
+  Send,
+  AlertCircle,
+  FileCheck,
+  Shield,
+  Copy,
+  ExternalLink,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/components/common/Toast';
 import StateSelector from './StateSelector';
 import CategorySelector from './CategorySelector';
 import ApplicationTypeSelector from './ApplicationTypeSelector';
@@ -20,7 +32,7 @@ const STEPS = [
   { id: 4, label: 'Questions' },
   { id: 5, label: 'Documents' },
   { id: 6, label: 'Preview' },
-  { id: 7, label: 'Download' },
+  { id: 7, label: 'Submit & Download' },
 ];
 
 export interface WizardState {
@@ -140,6 +152,8 @@ export default function ApplicationWizard() {
         applicationId={wizardState.applicationId!}
         applicationType={wizardState.selectedType!}
         state={wizardState.selectedState!}
+        formData={wizardState.generatedFormData}
+        formFields={wizardState.formFields}
         onDone={() => router.push('/applications')}
       />
     ),
@@ -209,24 +223,103 @@ export default function ApplicationWizard() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Download Step (Step 7)
+// Download & Submit Step (Step 7)
 // ─────────────────────────────────────────────────────────────
+
+interface SubmissionReceipt {
+  reference: string;
+  submittedAt: string;
+}
 
 function DownloadStep({
   applicationId,
   applicationType,
   state,
+  formData = {},
+  formFields = [],
   onDone,
 }: {
   applicationId: string;
   applicationType: string;
   state: string;
+  formData?: Record<string, string>;
+  formFields?: unknown[];
   onDone: () => void;
 }) {
+  const { showToast } = useToast();
   const [downloading, setDownloading] = useState(false);
-  const [downloaded, setDownloaded] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submissionSuccess, setSubmissionSuccess] = useState<SubmissionReceipt | null>(null);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [downloadCount, setDownloadCount] = useState(0);
 
-  const handleDownload = async () => {
+  // Validate form data before submission
+  const validateBeforeSubmission = async (): Promise<boolean> => {
+    setValidationErrors([]);
+    try {
+      const res = await fetch(`/api/applications/${applicationId}`);
+      const app = await res.json();
+      const currentData = app.generatedFormData || formData || {};
+      const templateFields = app.template?.formTemplate || formFields || [];
+
+      const missing: string[] = [];
+      templateFields.forEach((field: any) => {
+        if (field.required) {
+          const val = currentData[field.fieldId] || currentData[field.label];
+          if (!val || String(val).trim() === '') {
+            missing.push(field.label);
+          }
+        }
+      });
+
+      if (missing.length > 0) {
+        setValidationErrors(missing);
+        showToast('Please fill in all required fields before submitting.', 'error');
+        return false;
+      }
+      return true;
+    } catch {
+      return true;
+    }
+  };
+
+  // Submit Application Online
+  const handleSubmitOnline = async () => {
+    const isValid = await validateBeforeSubmission();
+    if (!isValid) return;
+
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/applications/${applicationId}/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ submittedFormData: formData }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.missingFields) {
+          setValidationErrors(data.missingFields);
+        }
+        throw new Error(data.error || 'Submission failed');
+      }
+
+      setSubmissionSuccess({
+        reference: data.submissionReference || `SUB-${Date.now().toString().slice(-6)}`,
+        submittedAt: data.submittedAt || new Date().toISOString(),
+      });
+      showToast('Application successfully submitted online! 🎉', 'success');
+    } catch (error: any) {
+      console.error('Submit error:', error);
+      showToast(error.message || 'Failed to submit application. Please try again.', 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Download PDF (Clean, Official, Unbranded)
+  const handleDownload = async (submissionRef?: string) => {
     setDownloading(true);
     try {
       const res = await fetch(`/api/applications/${applicationId}`);
@@ -235,11 +328,12 @@ function DownloadStep({
       const doc = generateApplicationPdf({
         applicationId,
         applicationType,
-        applicationTitle: app.template?.displayName || app.template?.title || applicationType.replace(/_/g, ' '),
+        applicationTitle:
+          app.template?.displayName || app.template?.title || applicationType.replace(/_/g, ' '),
         state,
         category: app.template?.category || app.category || 'General',
-        formData: app.generatedFormData || {},
-        formFields: (app.template?.formTemplate || []).map((f: any) => ({
+        formData: app.generatedFormData || formData || {},
+        formFields: (app.template?.formTemplate || formFields || []).map((f: any) => ({
           fieldId: f.fieldId,
           label: f.label,
           section: f.section,
@@ -250,87 +344,242 @@ function DownloadStep({
           verified: d.status === 'AVAILABLE' || d.status === 'VERIFIED',
         })),
         userName: app.user?.name || 'Citizen Applicant',
+        submissionRef: submissionRef || submissionSuccess?.reference,
       });
 
-      doc.save(`FormShield_${applicationType}_${new Date().toISOString().slice(0, 10)}.pdf`);
-      setDownloaded(true);
+      const cleanFileName = `Official_Application_${applicationType}_${new Date().toISOString().slice(0, 10)}.pdf`;
+      doc.save(cleanFileName);
+      setDownloadCount((prev) => prev + 1);
+      showToast('Official application form downloaded.', 'success');
 
-      // Update status
-      await fetch(`/api/applications/${applicationId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'DOWNLOADED' }),
-      });
+      // Update status to DOWNLOADED only if not already SUBMITTED
+      if (!submissionSuccess && app.status !== 'SUBMITTED') {
+        await fetch(`/api/applications/${applicationId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'DOWNLOADED' }),
+        });
+      }
     } catch (error) {
       console.error('PDF generation error:', error);
-      alert('Failed to generate PDF. Please try again.');
+      showToast('Failed to generate PDF. Please try again.', 'error');
     } finally {
       setDownloading(false);
     }
   };
 
-  return (
-    <div className="card text-center py-10">
-      {downloaded ? (
-        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-          <div className="w-20 h-20 rounded-full bg-[#f0fdf4] flex items-center justify-center mx-auto mb-5">
-            <CheckCircle2 size={40} className="text-[#16a34a]" />
+  // Render Submission Success Card
+  if (submissionSuccess) {
+    return (
+      <div className="card max-w-2xl mx-auto py-8 px-6 text-center animate-fadeInUp">
+        <div className="w-16 h-16 rounded-full bg-[#f0fdf4] border border-[#bbf7d0] flex items-center justify-center mx-auto mb-4">
+          <CheckCircle2 size={36} className="text-[#16a34a]" />
+        </div>
+
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-bold mb-3">
+          <FileCheck size={13} />
+          <span>OFFICIALLY SUBMITTED</span>
+        </div>
+
+        <h2 className="text-2xl font-extrabold text-[#111827] mb-2">
+          Application Registered Successfully!
+        </h2>
+        <p className="text-sm text-[#6b7280] mb-6 max-w-lg mx-auto">
+          Your application has been registered with the departmental system. Please retain your reference number for status tracking.
+        </p>
+
+        {/* Reference Code Box */}
+        <div className="bg-[#f8fafc] border-2 border-dashed border-[#cbd5e1] rounded-xl p-4 mb-6 max-w-md mx-auto flex items-center justify-between">
+          <div className="text-left">
+            <span className="text-[11px] font-bold text-[#64748b] uppercase tracking-wider block">
+              Submission Reference No.
+            </span>
+            <span className="font-mono text-base font-bold text-[#0f172a]">
+              {submissionSuccess.reference}
+            </span>
           </div>
-          <h2 className="text-heading-lg mb-2 text-[#16a34a]">Application Downloaded! 🎉</h2>
-          <p className="text-[#6b7280] mb-6 max-w-md mx-auto">
-            Your completed application form has been saved. Please review it before submitting.
-          </p>
-          <div className="bg-[#f0fdf4] rounded-xl p-5 max-w-lg mx-auto mb-6 text-left">
-            <h3 className="font-semibold text-[#15803d] mb-3">📋 Next Steps</h3>
-            <ol className="space-y-2">
-              {['Print the downloaded PDF on A4 paper', 'Attach all required original documents', 'Sign in the applicant signature section', 'Submit at the designated office or online portal', 'Keep the acknowledgment slip for future reference'].map((step, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-[#166534]">
-                  <span className="font-bold text-[#16a34a] flex-shrink-0">{i + 1}.</span>
-                  {step}
-                </li>
-              ))}
-            </ol>
-          </div>
-          <button onClick={onDone} className="btn-primary">
-            Back to My Applications <ChevronRight size={15} />
+          <button
+            type="button"
+            onClick={() => {
+              navigator.clipboard.writeText(submissionSuccess.reference);
+              showToast('Reference copied to clipboard', 'info');
+            }}
+            className="btn-ghost text-xs py-1.5 px-2.5"
+            title="Copy Reference"
+          >
+            <Copy size={13} />
+            Copy
           </button>
-        </motion.div>
-      ) : (
-        <>
-          <div className="w-20 h-20 rounded-full bg-[#e8f0fe] flex items-center justify-center mx-auto mb-5">
-            <span className="text-4xl">📄</span>
+        </div>
+
+        {/* Next Steps */}
+        <div className="bg-[#f0fdf4] border border-[#dcfce7] rounded-xl p-4 text-left mb-6 text-xs text-[#166534] space-y-2">
+          <p className="font-bold text-sm text-[#15803d]">What happens next?</p>
+          <ul className="list-disc list-inside space-y-1 text-[#166534]/90">
+            <li>The concerned department officer will inspect the pre-verified DigiLocker records.</li>
+            <li>You can download the stamped official submission copy below.</li>
+            <li>Status updates will reflect on your dashboard.</li>
+          </ul>
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => handleDownload(submissionSuccess.reference)}
+            disabled={downloading}
+            className="btn-primary text-sm py-2.5 px-5 w-full sm:w-auto"
+          >
+            {downloading ? (
+              <>
+                <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Generating PDF...
+              </>
+            ) : (
+              <>
+                <Download size={15} />
+                Download Stamped PDF
+              </>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={onDone}
+            className="btn-secondary text-sm py-2.5 px-5 w-full sm:w-auto"
+          >
+            Go to My Applications
+            <ChevronRight size={15} />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="card max-w-3xl mx-auto py-8 px-6 text-center">
+      {/* Icon */}
+      <div className="w-16 h-16 rounded-2xl bg-[#eff6ff] border border-[#bfdbfe] flex items-center justify-center mx-auto mb-4">
+        <FileCheck size={32} className="text-[#1a73e8]" />
+      </div>
+
+      <h2 className="text-2xl font-extrabold text-[#111827] mb-2">
+        Your Official Application is Ready
+      </h2>
+      <p className="text-sm text-[#6b7280] max-w-lg mx-auto mb-8">
+        Your application has been pre-verified against DigiLocker records and formatted in accordance with official departmental guidelines.
+      </p>
+
+      {/* Validation Errors Notice */}
+      {validationErrors.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-left text-xs text-red-800"
+        >
+          <div className="flex items-center gap-2 font-bold mb-1 text-red-700">
+            <AlertCircle size={15} />
+            <span>Missing Required Information:</span>
           </div>
-          <h2 className="text-heading-lg mb-2">Your Application is Ready!</h2>
-          <p className="text-[#6b7280] mb-2 max-w-lg mx-auto">
-            Your form has been auto-filled with verified DigiLocker data and is ready for download.
-            Review and download below.
-          </p>
-          <p className="text-sm text-[#9ca3af] mb-8">
-            The PDF will look exactly like the official government form.
-          </p>
-          <div className="flex justify-center gap-4">
+          <ul className="list-disc list-inside space-y-0.5 ml-2">
+            {validationErrors.map((field, idx) => (
+              <li key={idx}>{field}</li>
+            ))}
+          </ul>
+        </motion.div>
+      )}
+
+      {/* Two Prominent Action Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8 text-left">
+        {/* Option 1: Submit Directly Online */}
+        <div className="p-6 rounded-2xl border-2 border-[#1a73e8] bg-gradient-to-b from-blue-50/40 to-white flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+          <div className="absolute top-3 right-3">
+            <span className="text-[10px] font-bold uppercase tracking-wider bg-[#1a73e8] text-white px-2 py-0.5 rounded-full">
+              Recommended
+            </span>
+          </div>
+
+          <div>
+            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-[#1a73e8] mb-3">
+              <Send size={18} />
+            </div>
+            <h3 className="font-bold text-base text-[#111827] mb-1.5">
+              Submit Online Directly
+            </h3>
+            <p className="text-xs text-[#6b7280] leading-relaxed mb-4">
+              Directly submit this application to the department backend registry. Generates official tracking token and acknowledgment.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleSubmitOnline}
+            disabled={submitting}
+            className="btn-primary w-full justify-center text-sm py-3 font-semibold shadow-sm"
+          >
+            {submitting ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Submitting Application...
+              </>
+            ) : (
+              <>
+                <Send size={15} />
+                Submit Application Online
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Option 2: Download Official Form (PDF) */}
+        <div className="p-6 rounded-2xl border border-[#e2e8f0] bg-white flex flex-col justify-between hover:border-[#cbd5e1] hover:shadow-md transition-all">
+          <div>
+            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-[#475569] mb-3">
+              <Download size={18} />
+            </div>
+            <h3 className="font-bold text-base text-[#111827] mb-1.5">
+              Download Official PDF
+            </h3>
+            <p className="text-xs text-[#6b7280] leading-relaxed mb-4">
+              Get an official unbranded government application form formatted for A4 printing, manual submission, or state portal upload.
+            </p>
+          </div>
+
+          <div>
             <button
-              onClick={handleDownload}
+              type="button"
+              onClick={() => handleDownload()}
               disabled={downloading}
-              className="btn-primary text-base px-8 py-3"
+              className="btn-secondary w-full justify-center text-sm py-3 font-semibold"
             >
               {downloading ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-[#1a73e8] border-t-transparent rounded-full animate-spin" />
                   Generating PDF...
                 </>
               ) : (
                 <>
-                  ⬇️ Download Application PDF
+                  <Download size={15} />
+                  Download Application (PDF)
                 </>
               )}
             </button>
-            <button onClick={onDone} className="btn-secondary">
-              Save & Exit
-            </button>
+            {downloadCount > 0 && (
+              <p className="text-[11px] text-[#16a34a] font-medium text-center mt-2 flex items-center justify-center gap-1">
+                <CheckCircle2 size={12} />
+                Downloaded ({downloadCount})
+              </p>
+            )}
           </div>
-        </>
-      )}
+        </div>
+      </div>
+
+      {/* Exit Button */}
+      <div className="pt-2 border-t border-[#f1f5f9] flex justify-center">
+        <button type="button" onClick={onDone} className="btn-ghost text-xs text-[#64748b]">
+          Save & Exit to Applications
+        </button>
+      </div>
     </div>
   );
 }
+

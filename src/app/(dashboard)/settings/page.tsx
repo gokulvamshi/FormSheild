@@ -4,22 +4,14 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Bell, Shield, Globe, Trash2, CheckCircle2 } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
-
-const LANGUAGES = [
-  { code: 'ENGLISH', label: 'English' },
-  { code: 'HINDI', label: 'हिन्दी (Hindi)' },
-  { code: 'TELUGU', label: 'తెలుగు (Telugu)' },
-  { code: 'TAMIL', label: 'தமிழ் (Tamil)' },
-  { code: 'MARATHI', label: 'मराठी (Marathi)' },
-  { code: 'KANNADA', label: 'ಕನ್ನಡ (Kannada)' },
-  { code: 'MALAYALAM', label: 'മലയാളം (Malayalam)' },
-];
+import { useLanguage } from '@/context/LanguageContext';
+import { LanguageCode } from '@/lib/i18n';
 
 export default function SettingsPage() {
   const { user, updateUser } = useUserStore();
+  const { language: currentLang, setLanguage: setAppLanguage, t, languages } = useLanguage();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [language, setLanguage] = useState('ENGLISH');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -27,7 +19,6 @@ export default function SettingsPage() {
     if (user) {
       setName(user.name || '');
       setEmail(user.email || '');
-      setLanguage(user.language || 'ENGLISH');
     }
   }, [user]);
 
@@ -37,7 +28,7 @@ export default function SettingsPage() {
       const res = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, language }),
+        body: JSON.stringify({ name, email, language: currentLang.toUpperCase() }),
       });
       const data = await res.json();
       if (!data.error) {
@@ -58,35 +49,47 @@ export default function SettingsPage() {
       content: (
         <div className="space-y-4">
           <div>
-            <label className="form-label">Google Account Email</label>
-            <input type="email" className="form-input bg-slate-50 text-slate-600" value={user?.email || email || ''} disabled />
-            <p className="text-xs text-[#9ca3af] mt-1">Verified via Google Sign-In. It&apos;s your persistent citizen ID.</p>
-          </div>
-          <div>
             <label className="form-label">Full Name</label>
-            <input type="text" className="form-input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your full name" />
+            <input
+              type="text"
+              className="form-input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </div>
           <div>
-            <label className="form-label">Contact Phone Number (Optional)</label>
-            <input type="text" className="form-input" value={user?.phone || ''} disabled placeholder="From DigiLocker / Aadhaar KYC" />
-            <p className="text-xs text-[#9ca3af] mt-1">Automatically linked during DigiLocker Aadhaar KYC.</p>
+            <label className="form-label">Email</label>
+            <input
+              type="email"
+              className="form-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
         </div>
       ),
     },
     {
       id: 'language',
-      title: 'Language',
+      title: t('common.languages', 'Language'),
       icon: <Globe size={18} />,
       content: (
         <div>
-          <label className="form-label">Preferred Language</label>
-          <select className="form-input" value={language} onChange={(e) => setLanguage(e.target.value)}>
-            {LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code}>{l.label}</option>
+          <label className="form-label">{t('common.selectLanguage', 'Preferred Language')}</label>
+          <select
+            className="form-input"
+            value={currentLang}
+            onChange={(e) => setAppLanguage(e.target.value as LanguageCode)}
+          >
+            {languages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.nativeName} ({l.name})
+              </option>
             ))}
           </select>
-          <p className="text-xs text-[#9ca3af] mt-1">Note: Application forms are only available in English in Version 1. Language support for Hindi and regional languages is coming soon.</p>
+          <p className="text-xs text-[#9ca3af] mt-1">
+            Translations update dynamically across all dashboard screens, forms, and navigation.
+          </p>
         </div>
       ),
     },

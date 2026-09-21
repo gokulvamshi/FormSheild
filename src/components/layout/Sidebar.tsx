@@ -16,14 +16,15 @@ import {
 import { cn, getInitials } from '@/lib/utils';
 import { useUserStore } from '@/store/useUserStore';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 const NAV_ITEMS = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/applications', label: 'My Applications', icon: FileText },
-  { href: '/documents', label: 'Documents', icon: FolderOpen },
-  { href: '/digilocker', label: 'DigiLocker', icon: Shield },
-  { href: '/activity', label: 'Activity', icon: Activity },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/dashboard', labelKey: 'sidebar.dashboard', defaultLabel: 'Dashboard', icon: LayoutDashboard },
+  { href: '/applications', labelKey: 'sidebar.myApplications', defaultLabel: 'My Applications', icon: FileText },
+  { href: '/documents', labelKey: 'sidebar.documents', defaultLabel: 'Documents', icon: FolderOpen },
+  { href: '/digilocker', labelKey: 'sidebar.digilocker', defaultLabel: 'DigiLocker', icon: Shield },
+  { href: '/activity', labelKey: 'sidebar.activity', defaultLabel: 'Activity', icon: Activity },
+  { href: '/settings', labelKey: 'sidebar.settings', defaultLabel: 'Settings', icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -31,6 +32,7 @@ export default function Sidebar() {
   const router = useRouter();
   const { user } = useUserStore();
   const { signOut } = useAuth();
+  const { t } = useLanguage();
 
   const handleLogout = async () => {
     await signOut();
@@ -63,8 +65,8 @@ export default function Sidebar() {
             <span className="font-bold text-[15px] text-[#1a73e8]">Shield</span>
           </div>
         </Link>
-        <p className="text-[10px] text-[#9ca3af] mt-0.5 ml-10 font-medium tracking-wide uppercase">
-          Pre-Submission Intelligence
+        <p className="text-[10px] text-[#9ca3af] mt-0.5 ml-10 font-medium tracking-wide uppercase truncate">
+          {t('sidebar.preSubmission', 'Pre-Submission Intelligence')}
         </p>
       </div>
 
@@ -75,13 +77,13 @@ export default function Sidebar() {
           className="btn-primary w-full justify-center text-sm py-2.5 rounded-lg"
         >
           <Plus size={15} />
-          New Application
+          {t('sidebar.newApplication', 'New Application')}
         </Link>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {NAV_ITEMS.map(({ href, labelKey, defaultLabel, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(href + '/');
           return (
             <Link
@@ -90,8 +92,8 @@ export default function Sidebar() {
               className={cn('sidebar-nav-item', isActive && 'active')}
             >
               <Icon size={17} strokeWidth={isActive ? 2.2 : 1.8} />
-              <span className="flex-1">{label}</span>
-              {isActive && <ChevronRight size={13} className="opacity-50" />}
+              <span className="flex-1 truncate">{t(labelKey, defaultLabel)}</span>
+              {isActive && <ChevronRight size={13} className="opacity-50 flex-shrink-0" />}
             </Link>
           );
         })}
@@ -107,13 +109,13 @@ export default function Sidebar() {
               : 'bg-[#fef2f2] text-[#dc2626]'
           )}>
             <div className={cn(
-              'w-2 h-2 rounded-full',
+              'w-2 h-2 rounded-full flex-shrink-0',
               user.digilockerConnected ? 'bg-[#16a34a]' : 'bg-[#dc2626]'
             )} />
-            <span>
+            <span className="truncate">
               {user.digilockerConnected
-                ? 'DigiLocker Connected'
-                : 'DigiLocker Not Connected'}
+                ? t('sidebar.digilockerConnected', 'DigiLocker Connected')
+                : t('sidebar.digilockerNotConnected', 'DigiLocker Not Connected')}
             </span>
           </div>
         </div>
@@ -146,17 +148,17 @@ export default function Sidebar() {
           <div className="flex items-center gap-2">
             <Link
               href="/settings"
-              className="text-xs text-[#6b7280] hover:text-[#1a73e8] transition-colors font-medium"
+              className="text-xs text-[#6b7280] hover:text-[#1a73e8] transition-colors font-medium truncate"
             >
-              Privacy & Security
+              {t('sidebar.privacySecurity', 'Privacy & Security')}
             </Link>
             <span className="text-[#e5e7eb]">·</span>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1 text-xs text-[#6b7280] hover:text-[#dc2626] transition-colors font-medium"
+              className="flex items-center gap-1 text-xs text-[#6b7280] hover:text-[#dc2626] transition-colors font-medium cursor-pointer"
             >
               <LogOut size={11} />
-              Sign out
+              {t('sidebar.signOut', 'Sign out')}
             </button>
           </div>
         </div>
